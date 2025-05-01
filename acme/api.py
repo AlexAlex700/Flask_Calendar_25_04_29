@@ -1,3 +1,4 @@
+
 from flask import Flask
 from flask import request
 # запуск сервера .\.venv\Scripts\flask --app .\acme\server.py run
@@ -11,11 +12,11 @@ _note_logic = logic.NoteLogic() # Создаём объект _note_logic, че�
 
 
 # Notes exception class
-class ApiException(Exception):# кастомное исключение 
+class ApiException(Exception):# кастомное исключение в нем нет логики, необходим для исключения при конвертации строки
        pass
 # Notes exception f-n
-def _from_raw(raw_note) -> model.Note:
-       parts = raw_note.split('|')
+def _from_raw(raw_note) -> model.Note: #берет текстовую строку и возвращает
+       parts = raw_note.split('|') # строка в список
        if len(parts) == 2:
               note = model.Note()
               note.id = None
@@ -31,9 +32,9 @@ def _from_raw(raw_note) -> model.Note:
        else:
               raise  ApiException(f"Invalid RAW note data {raw_note}")
 
-def _to_raw(note: model.Note) -> str:
+def _to_raw(note: model.Note) -> str: # обратное для возврата
        if note.id is None: #такая запись более правильная с точки зрения питона
-              return f"{note.title}|{note.text}"
+              return f"{note.title}|{note.text}" # если нет Id возвращает только 2 значения в виде строки
        else:
               return f"{note.id}|{note.title}|{note.text}"
 
@@ -41,13 +42,13 @@ API_ROOT = "/api/v1" # добавим корень нашего API то что 
 NOTE_API_ROOT = API_ROOT + "/note"
 
 # добавим роутинг по урл
-@app.route(NOTE_API_ROOT + "/", methods=["POST"])
+@app.route(NOTE_API_ROOT + "/", methods=["POST"]) # это декоратор во Flask, который связывает URL-адрес (маршрут) с функцией, которую должен вызывать сервер при обращении к этому адресу.
 def create():
     try:
         data = request.get_data().decode('utf-8')
         note = _from_raw(data)
         _id = _note_logic.create(note)
-        return f"new id: {_id}", 201
+        return f"new id: {_id}", 201 # 201 для http используется при создании заметок
     except Exception as ex:
         return f"failed to CREATE with: {ex}", 404
 
@@ -62,7 +63,7 @@ def list():
     except Exception as ex:
         return f"failed to LIST with: {ex}", 404
 
-@app.route(NOTE_API_ROOT + "/<_id>/", methods=["GET"])
+@app.route(NOTE_API_ROOT + "/<_id>/", methods=["GET"]) # нижнее подч, чтобы не было с сист ф-ми путаницы
 def read(_id: str):
     try:
         note = _note_logic.read(_id)

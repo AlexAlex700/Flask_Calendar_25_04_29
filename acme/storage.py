@@ -1,22 +1,22 @@
-from typing import List
+from typing import List #List используется для аннотации типов (в частности — возвращаемого списка заметок).
 
 import model
 
 class StorageException(Exception):
     pass
 
-class LocalStorage: #хранение данных в памяти в виде словаря
+class LocalStorage: # хранение данных в памяти в виде словаря
     def __init__(self):
         self._id_counter = 0
         self._storage = {}
 
-    def create(self, note: model.Note) -> str:
+    def create(self, note: model.Note) -> str: # увеличивает счетчик и присваевает id
         self._id_counter += 1
         note.id = str(self._id_counter)
         self._storage[note.id] = note
         return note.id
 
-    def list(self) -> List[model.Note]:
+    def list(self) -> List[model.Note]:# Возвращает все заметки, как список.
         return list(self._storage.values())
 
     def read(self, _id: str) -> model.Note:

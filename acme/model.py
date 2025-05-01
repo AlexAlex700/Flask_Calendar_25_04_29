@@ -4,6 +4,7 @@ class Note:      # 1 добавили класс  с его типами
     text: str
 class Event:
     id: str
+    date: str
     title: str
     text: str
-#   date_:
+

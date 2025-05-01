@@ -4,8 +4,8 @@ from typing import List
 import model
 import db
 
-TITLE_LIMIT = 30# для теста ставим 5 60 # лимит на заголовок
-TEXT_LIMIT = 200# для теста ставим 5 120 # лимит на текст 120 символов
+TITLE_LIMIT = 30# для теста ставим
+TEXT_LIMIT = 200# для теста ставим
 
 class LogicException(Exception):
     pass
@@ -14,7 +14,7 @@ class NoteLogic:
     def __init__(self):
         self._note_db = db.NoteDB()
 
-    @staticmethod
+    @staticmethod # проверка ограничения по длине
     def _validate_note(note: model.Note): #функция ограничений из тз
         if note is None:
             raise LogicException("note is None")

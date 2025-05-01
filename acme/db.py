@@ -1,9 +1,10 @@
+# Интерфейс к хранилищу, проксирует все обращения к storage, здесь нет никакой логики
 from typing import List
 
 import model
 import storage
 
-class DBException(Exception):
+class DBException(Exception):# exeption уровня db уровень логики должен от слоя bd ждать, а не от сторадж
     pass
 
 class NoteDB:
