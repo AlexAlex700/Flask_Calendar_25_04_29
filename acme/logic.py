@@ -10,47 +10,47 @@ TEXT_LIMIT = 200# для теста ставим
 class LogicException(Exception):
     pass
 
-class NoteLogic:
+class EventLogic:
     def __init__(self):
-        self._note_db = db.NoteDB()
+        self._event_db = db.EventDB()
 
     @staticmethod # проверка ограничения по длине
-    def _validate_note(note: model.Note): #функция ограничений из тз
-        if note is None:
-            raise LogicException("note is None")
-        if note.title is None or len(note.title) > TITLE_LIMIT:
+    def _validate_event(event: model.Event): #функция ограничений из тз
+        if event is None:
+            raise LogicException("event is None")
+        if event.title is None or len(event.title) > TITLE_LIMIT:
             raise LogicException(f"title length > MAX: {TITLE_LIMIT}")
-        if note.text is None or len(note.text) > TEXT_LIMIT:
+        if event.text is None or len(event.text) > TEXT_LIMIT:
             raise LogicException(f"text length > MAX: {TEXT_LIMIT}")
 
-    def create(self, note: model.Note) -> str:
-        self._validate_note(note)
+    def create(self, event: model.Event) -> str:
+        self._validate_event(event)
         try:
-            return self._note_db.create(note)
+            return self._event_db.create(event)
         except Exception as ex:
             raise LogicException(f"failed CREATE logic with: {ex}")
 
-    def list(self) -> List[model.Note]:
+    def list(self) -> List[model.Event]:
         try:
-            return self._note_db.list()
+            return self._event_db.list()
         except Exception as ex:
             raise LogicException(f"failed LIST operation with: {ex}")
 
-    def read(self, _id: str) -> model.Note:
+    def read(self, _id: str) -> model.Event:
         try:
-            return self._note_db.read(_id)
+            return self._event_db.read(_id)
         except Exception as ex:
             raise LogicException(f"failed READ operation with: {ex}")
 
-    def update(self, _id: str, note: model.Note):
-        self._validate_note(note)
+    def update(self, _id: str, event: model.Event):
+        self._validate_event(event)
         try:
-            return self._note_db.update(_id, note)
+            return self._event_db.update(_id, event)
         except Exception as ex:
             raise LogicException(f"failed UPDATE operation with: {ex}")
 
     def delete(self, _id: str):
         try:
-            return self._note_db.delete(_id)
+            return self._event_db.delete(_id)
         except Exception as ex:
             raise LogicException(f"failed DELETE operation with: {ex}")
