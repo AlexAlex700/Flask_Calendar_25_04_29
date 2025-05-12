@@ -1,5 +1,5 @@
 from typing import List
-#from datetime import date
+from datetime import datetime
 
 import model
 import db
@@ -15,7 +15,7 @@ class EventLogic:
         self._event_db = db.EventDB()
 
     @staticmethod # проверка ограничения по длине
-    def _validate_event(event: model.Event): #функция ограничений из тз
+    def _validate_event(event: model.Event, existing_events: List[model.Event] = None): #функция ограничений из тз
         if event is None:
             raise LogicException("event is None")
         if event.title is None or len(event.title) > TITLE_LIMIT:
@@ -23,8 +23,21 @@ class EventLogic:
         if event.text is None or len(event.text) > TEXT_LIMIT:
             raise LogicException(f"text length > MAX: {TEXT_LIMIT}")
 
+
+            # Проверка корректности формата даты
+        try:
+            datetime.strptime(event.date, "%Y-%m-%d")
+        except ValueError:
+            raise LogicException("Invalid date format. Expected YYYY-MM-DD.")
+        # Проверка уникальности даты, если передан список существующих событий
+        if existing_events:
+            for ev in existing_events:
+                if ev.date == event.date and ev.id != event.id:
+                    raise LogicException("Only one event per day is allowed.")
+
     def create(self, event: model.Event) -> str:
-        self._validate_event(event)
+        all_events = self._event_db.list()
+        self._validate_event(event, all_events)
         try:
             return self._event_db.create(event)
         except Exception as ex:
@@ -43,11 +56,14 @@ class EventLogic:
             raise LogicException(f"failed READ operation with: {ex}")
 
     def update(self, _id: str, event: model.Event):
-        self._validate_event(event)
+        all_events = self._event_db.list()
+        event.id = _id  # временно подставим ID, чтобы исключить его при проверке уникальности
+        self._validate_event(event, all_events)
         try:
             return self._event_db.update(_id, event)
         except Exception as ex:
             raise LogicException(f"failed UPDATE operation with: {ex}")
+
 
     def delete(self, _id: str):
         try:
