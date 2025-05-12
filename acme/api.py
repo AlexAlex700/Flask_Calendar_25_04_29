@@ -32,7 +32,7 @@ def _from_raw(raw_event) -> model.Event: #берет текстовую стро
               event.text = str(parts[3])
               return event
        else:
-              raise  ApiException(f"Invalid RAW note data {raw_event}")
+              raise  ApiException(f"Invalid RAW note calendar {raw_event}")
 
 def _to_raw(event: model.Event) -> str: # обратное для возврата
        if event.id is None: #такая запись более правильная с точки зрения питона
@@ -41,14 +41,14 @@ def _to_raw(event: model.Event) -> str: # обратное для возврат
               return f"{event.id}|{event.date}|{event.title}|{event.text}"
 
 API_ROOT = "/api/v1" # Добавим корень нашего API то что будет исп. При вызовах
-EVENT_API_ROOT = API_ROOT + "/event"
+EVENT_API_ROOT = API_ROOT + "/calendar"
 
 # добавим роутинг по урл
 @app.route(EVENT_API_ROOT + "/", methods=["POST"]) # это декоратор во Flask, который связывает URL-адрес (маршрут) с функцией, которую должен вызывать сервер при обращении к этому адресу.
 def create():
     try:
-        data = request.get_data().decode('utf-8')
-        event = _from_raw(data)
+        calendar = request.get_data().decode('utf-8')
+        event = _from_raw(calendar)
         _id = _event_logic.create(event)
         return f"new id: {_id}", 201 # 201 для http используется при создании заметок
     except Exception as ex:
@@ -77,8 +77,8 @@ def read(_id: str):
 @app.route(EVENT_API_ROOT + "/<_id>/", methods=["PUT"])
 def update(_id: str):
     try:
-        data = request.get_data().decode('utf-8')
-        event = _from_raw(data)
+        calendar = request.get_data().decode('utf-8')
+        event = _from_raw(calendar)
         _event_logic.update(_id, event)
         return "updated", 200
     except Exception as ex:

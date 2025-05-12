@@ -15,31 +15,31 @@ class EventLogic:
         self._event_db = db.EventDB()
 
     @staticmethod # проверка ограничения по длине
-    def _validate_event(event: model.Event, existing_events: List[model.Event] = None): #функция ограничений из тз
-        if event is None:
-            raise LogicException("event is None")
-        if event.title is None or len(event.title) > TITLE_LIMIT:
+    def _validate_event(calendar: model.Event, existing_events: List[model.Event] = None): #функция ограничений из тз
+        if calendar is None:
+            raise LogicException("calendar is None")
+        if calendar.title is None or len(calendar.title) > TITLE_LIMIT:
             raise LogicException(f"title length > MAX: {TITLE_LIMIT}")
-        if event.text is None or len(event.text) > TEXT_LIMIT:
+        if calendar.text is None or len(calendar.text) > TEXT_LIMIT:
             raise LogicException(f"text length > MAX: {TEXT_LIMIT}")
 
 
             # Проверка корректности формата даты
         try:
-            datetime.strptime(event.date, "%Y-%m-%d")
+            datetime.strptime(calendar.date, "%Y-%m-%d")
         except ValueError:
             raise LogicException("Invalid date format. Expected YYYY-MM-DD.")
         # Проверка уникальности даты, если передан список существующих событий
         if existing_events:
             for ev in existing_events:
-                if ev.date == event.date and ev.id != event.id:
-                    raise LogicException("Only one event per day is allowed.")
+                if ev.date == calendar.date and ev.id != calendar.id:
+                    raise LogicException("Only one calendar per day is allowed.")
 
-    def create(self, event: model.Event) -> str:
+    def create(self, calendar: model.Event) -> str:
         all_events = self._event_db.list()
-        self._validate_event(event, all_events)
+        self._validate_event(calendar, all_events)
         try:
-            return self._event_db.create(event)
+            return self._event_db.create(calendar)
         except Exception as ex:
             raise LogicException(f"failed CREATE logic with: {ex}")
 
@@ -55,12 +55,12 @@ class EventLogic:
         except Exception as ex:
             raise LogicException(f"failed READ operation with: {ex}")
 
-    def update(self, _id: str, event: model.Event):
+    def update(self, _id: str, calendar: model.Event):
         all_events = self._event_db.list()
-        event.id = _id  # временно подставим ID, чтобы исключить его при проверке уникальности
-        self._validate_event(event, all_events)
+        calendar.id = _id  # временно подставим ID, чтобы исключить его при проверке уникальности
+        self._validate_event(calendar, all_events)
         try:
-            return self._event_db.update(_id, event)
+            return self._event_db.update(_id, calendar)
         except Exception as ex:
             raise LogicException(f"failed UPDATE operation with: {ex}")
 

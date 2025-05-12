@@ -11,9 +11,9 @@ class EventDB:
     def __init__(self):
         self._storage = storage.LocalStorage()
 
-    def create(self, event: model.Event) -> str:
+    def create(self, calendar: model.Event) -> str:
         try:
-            return self._storage.create(event)
+            return self._storage.create(calendar)
         except Exception as ex:
             raise DBException(f"failed CREATE operation with: {ex}")
 
@@ -29,9 +29,9 @@ class EventDB:
         except Exception as ex:
             raise DBException(f"failed READ operation with: {ex}")
 
-    def update(self, _id: str, event: model.Event):
+    def update(self, _id: str, calendar: model.Event):
         try:
-            self._storage.update(_id, event)
+            self._storage.update(_id, calendar)
         except Exception as ex:
             raise DBException(f"failed UPDATE operation with: {ex}")
 
