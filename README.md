@@ -3,7 +3,7 @@
 Допускается одно событие на одну дату 
 
 При создании использовался PyCharm 
-Добавление 
+Добавление виртуального окружения .venv 
 Через меню File - Settings - Project: 01_API - Python Interpreter - add Interpreter - Add local interpreter
 - Virtualenv Environment -New
   адресс папки проэкта
