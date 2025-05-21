@@ -1,3 +1,15 @@
+Проект календаря на Flask 
+Назначение : ведения журнала событий
+Допускается одно событие на одну дату 
+
+При создании использовался PyCharm 
+Добавление 
+Через меню File - Settings - Project: 01_API - Python Interpreter - add Interpreter - Add local interpreter
+- Virtualenv Environment -New
+  адресс папки проэкта
+Установка Flask:
+  pip install flask
+
 Для Windows
   Запуск flask:
     .\.venv\Scripts\flask.exe --app .\pythonProject\acme\server.py run
